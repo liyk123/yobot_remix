@@ -26,7 +26,8 @@ import os
 import sys
 import configparser
 from .clan_battle.components.multi_cq_utils import refresh
-
+from .ybdata import User
+import re
 
 class Custom:
     def __init__(self,
@@ -89,6 +90,20 @@ class Custom:
                 config.write(f)
             refresh()
             return '群记录添加成功！'
+        
+        #绑定昵称
+        match = re.match(r'绑定 *(?:[\:：](.*))? *$', cmd)
+        if match is not None:
+            user_id = ctx['user_id']
+            nickname = match.group(1)
+            if not nickname:
+                return '格式错误，格式为 绑定:[昵称]，请重试！'
+            users = User.get_or_none(qqid=user_id)
+            if users is None:
+                return '请先加入公会'
+            user = users[0]
+            user.nickname = nickname
+            return f'绑定成功，{user_id} -> {nickname}'
 
         return
 
