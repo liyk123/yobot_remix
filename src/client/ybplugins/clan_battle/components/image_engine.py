@@ -5,6 +5,7 @@ from typing import Tuple, List, Optional, Dict, Set, Union, Any
 from pathlib import Path
 import httpx
 import asyncio
+import json
 
 FILE_PATH = Path(sys._MEIPASS).resolve() if "_MEIPASS" in dir(sys) else Path(__file__).resolve().parent
 FONTS_PATH = os.path.join(FILE_PATH, "fonts")
@@ -576,11 +577,20 @@ async def download_pic(url: str, proxies: Optional[str] = None, file_name="") ->
         await client.aclose()
     return image_path
 
+def get_realdID(qqid: int) -> str:
+    realID = ""
+    with httpx.Client() as client:
+        response = client.get(url=f"http://gensokyo:9444/getid?type=2&id={qqid}")
+        if response.status_code != 200:
+            raise ValueError(f"Get realID respond status code error: {response.status_code}")
+        realID = json.loads(response.text)['id']
+    return realID
+
 
 async def download_user_profile_image(user_id_list: List[int]) -> None:
     task_list = []
     for this_user_id in user_id_list:
-        task_list.append(download_pic(f"http://q1.qlogo.cn/g?b=qq&nk={this_user_id}&s=1", file_name=f"{this_user_id}.jpg"))
+        task_list.append(download_pic(f"https://q.qlogo.cn/qqapp/102074004/{get_realdID(this_user_id)}/1", file_name=f"{this_user_id}.jpg"))
     await asyncio.gather(*task_list)
 
 

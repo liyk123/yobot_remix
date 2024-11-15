@@ -15,7 +15,7 @@ from ...ybdata import Clan_group, Clan_member, User
 from ..exception import ClanBattleError, InputError, GroupNotExist
 from ..util import atqq
 from .define import Commands, Server
-from .image_engine import download_missing_user_profile, image_engine_init
+from .image_engine import download_missing_user_profile, image_engine_init, download_user_profile_image
 from .multi_cq_utils import refresh
 
 _logger = logging.getLogger(__name__)
@@ -138,6 +138,8 @@ def execute(self, match_num, ctx):
 			else:
 				nickname = (ctx['sender'].get('card') or ctx['sender'].get('nickname'))
 			asyncio.ensure_future(self.bind_group(group_id, user_id, nickname))
+			user_id_list = [user_id]
+			asyncio.ensure_future(download_user_profile_image(user_id_list))
 			_logger.info('群聊 成功 {} {} {}'.format(user_id, group_id, cmd))
 			return '{}已加入本公会'.format(atqq(user_id))
 
