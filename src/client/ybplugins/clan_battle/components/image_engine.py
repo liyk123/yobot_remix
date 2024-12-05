@@ -586,11 +586,19 @@ def get_realdID(qqid: int) -> str:
         realID = json.loads(response.text)['id']
     return realID
 
+def get_appID() -> str:
+    appID = ""
+    with httpx.Client() as client:
+        response = client.get(url="http://gensokyo:5700/get_login_info")
+        if response.status_code != 200:
+            raise ValueError(f"Get appID respond status code error: {response.status_code}")
+        appID = f"{json.loads(response.text)['data']['user_id']}"
+    return appID
 
 async def download_user_profile_image(user_id_list: List[int]) -> None:
     task_list = []
     for this_user_id in user_id_list:
-        task_list.append(download_pic(f"https://q.qlogo.cn/qqapp/102074004/{get_realdID(this_user_id)}/1", file_name=f"{this_user_id}.jpg"))
+        task_list.append(download_pic(f"https://q.qlogo.cn/qqapp/{get_appID()}/{get_realdID(this_user_id)}/1", file_name=f"{this_user_id}.jpg"))
     await asyncio.gather(*task_list)
 
 
