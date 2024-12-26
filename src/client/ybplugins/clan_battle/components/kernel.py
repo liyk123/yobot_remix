@@ -376,8 +376,6 @@ def execute(self, match_num, ctx):
 		match = re.match(r'^权限 *(?:\[CQ:at,qq=(\d+)\])? *$', cmd)
 		if match:
 			if match.group(1):
-				if ctx['sender']['role'] == 'member':
-					return '只有管理员才可以申请权限'
 				user_id = int(match.group(1))
 				nickname = None
 			else:
@@ -386,9 +384,8 @@ def execute(self, match_num, ctx):
 			membership = Clan_member.get_or_create(group_id = group_id, qqid = user_id)[0]
 			user.nickname = nickname
 			user.clan_group_id = group_id
-			if user.authority_group >= 10:
-				user.authority_group = (100 if ctx['sender']['role'] == 'member' else 10)					
-				membership.role = user.authority_group
+			user.authority_group = 100					
+			membership.role = user.authority_group
 			user.save()
 			membership.save()
 			_logger.info('群聊 成功 {} {} {}'.format(user_id, group_id, cmd))
