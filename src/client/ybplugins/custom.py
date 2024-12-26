@@ -103,6 +103,7 @@ class Custom:
                 return '请先加入公会'
             user = users[0]
             user.nickname = nickname
+            user.save()
             return f'绑定成功，{user_id} -> {nickname}'
 
         return
