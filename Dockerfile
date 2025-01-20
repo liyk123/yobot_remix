@@ -6,8 +6,8 @@ WORKDIR /yobot
 # 设置默认的环境变量
 ENV HTTP_PROXY=""
 ENV HTTPS_PROXY=""
-ENV UID=99
-ENV GID=100
+ENV UID=1000
+ENV GID=1000
 ENV PATH="/home/user/.local/bin:${PATH}"
 
 # 复制文件
@@ -37,7 +37,7 @@ RUN sed -i 's/http:\/\/deb.debian.org/http:\/\/ftp.cn.debian.org/g' /etc/apt/sou
     && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo 'Asia/Shanghai' >/etc/timezone \
     && chown -R user:user /yobot \
-    && cd /yobot/src/client \
+    && cd /yobot \
     && gosu user pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple \
     && gosu user pip install --upgrade pip \
     && gosu user pip install -r requirements.txt --no-cache-dir \
