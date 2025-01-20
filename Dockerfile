@@ -1,7 +1,7 @@
 FROM python:3.8-slim-bullseye
 
 # 设置工作目录
-WORKDIR /yobot/src/client
+WORKDIR /yobot
 
 # 设置默认的环境变量
 ENV HTTP_PROXY=""
@@ -11,8 +11,8 @@ ENV GID=100
 ENV PATH="/home/user/.local/bin:${PATH}"
 
 # 复制文件
-COPY ./yobot/ /yobot/
-COPY ./entrypoint.sh /entrypoint.sh
+COPY src/client/ /yobot/
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 
 # 创建用户和组
 RUN groupadd -g $GID user && useradd -u $UID -g $GID -m user
@@ -42,6 +42,10 @@ RUN sed -i 's/http:\/\/deb.debian.org/http:\/\/ftp.cn.debian.org/g' /etc/apt/sou
     && gosu user pip install --upgrade pip \
     && gosu user pip install -r requirements.txt --no-cache-dir \
     && chown user:user /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
+
+EXPOSE 9222
+
+VOLUME /yobot/yobot_data
 
 # 运行应用程序
 ENTRYPOINT ["/docker-entrypoint.sh"]

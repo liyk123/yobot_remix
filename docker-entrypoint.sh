@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 设置工作目录
-WORKDIR="/yobot/src/client"
+WORKDIR="/yobot"
 cd $WORKDIR
 
 # 设置代理环境变量
