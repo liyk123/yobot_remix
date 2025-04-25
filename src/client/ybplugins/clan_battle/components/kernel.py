@@ -384,7 +384,7 @@ def execute(self, match_num, ctx):
 			membership = Clan_member.get_or_create(group_id = group_id, qqid = user_id)[0]
 			user.nickname = nickname
 			user.clan_group_id = group_id
-			user.authority_group = 100					
+			user.authority_group = 10
 			membership.role = user.authority_group
 			user.save()
 			membership.save()
